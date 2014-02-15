@@ -12,7 +12,7 @@ namespace CudaGameOfLife
     class Program
     {
         private const int gridSize = 1000;
-        private const int Generations = 500;
+        private const int Generations = 10;
         private static bool[,] _cells1 = new bool[gridSize, gridSize];
         private static bool[,] _cells2 = new bool[gridSize, gridSize];
         private static bool[,] _cells1Gpu;
@@ -56,7 +56,7 @@ namespace CudaGameOfLife
 
         private static void RunGame(GPGPU gpu)
         {
-            setupGlider(_cells1, 10,10);
+            setupGlider(_cells1, 5, 5);
 
             TimeEvent(() => GpuGoL(gpu), "GPU GoL");
             TimeEvent(CpuGoL, "CPU GoL");
@@ -81,7 +81,7 @@ namespace CudaGameOfLife
 
         private static void GpuGoL(GPGPU gpu)
         {
-            _cells1Gpu = gpu.CopyToDevice(_cells1);
+            TimeEvent(() => _cells1Gpu = gpu.CopyToDevice(_cells1), "Copy cells array to GPU RAM");
             _cells2Gpu = gpu.CopyToDevice(_cells2);
 
             for (var i = 0; i < Generations; i++)
