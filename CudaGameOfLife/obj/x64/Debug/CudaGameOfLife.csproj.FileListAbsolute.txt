@@ -1,0 +1,7 @@
+C:\Users\Kim\Documents\CudaTest\CudaGameOfLife\CudaGameOfLife\bin\x64\Debug\CudaGameOfLife.exe.config
+C:\Users\Kim\Documents\CudaTest\CudaGameOfLife\CudaGameOfLife\bin\x64\Debug\CudaGameOfLife.exe
+C:\Users\Kim\Documents\CudaTest\CudaGameOfLife\CudaGameOfLife\bin\x64\Debug\CudaGameOfLife.pdb
+C:\Users\Kim\Documents\CudaTest\CudaGameOfLife\CudaGameOfLife\bin\x64\Debug\Cudafy.NET.dll
+C:\Users\Kim\Documents\CudaTest\CudaGameOfLife\CudaGameOfLife\bin\x64\Debug\Cudafy.NET.xml
+C:\Users\Kim\Documents\CudaTest\CudaGameOfLife\CudaGameOfLife\obj\x64\Debug\CudaGameOfLife.exe
+C:\Users\Kim\Documents\CudaTest\CudaGameOfLife\CudaGameOfLife\obj\x64\Debug\CudaGameOfLife.pdb

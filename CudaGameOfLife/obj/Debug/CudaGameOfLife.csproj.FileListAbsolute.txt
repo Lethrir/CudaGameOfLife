@@ -1,0 +1,8 @@
+C:\Users\Kim\Documents\CudaTest\CudaGameOfLife\CudaGameOfLife\bin\Debug\CudaGameOfLife.exe.config
+C:\Users\Kim\Documents\CudaTest\CudaGameOfLife\CudaGameOfLife\obj\Debug\CudaGameOfLife.exe
+C:\Users\Kim\Documents\CudaTest\CudaGameOfLife\CudaGameOfLife\obj\Debug\CudaGameOfLife.pdb
+C:\Users\Kim\Documents\CudaTest\CudaGameOfLife\CudaGameOfLife\bin\Debug\CudaGameOfLife.exe
+C:\Users\Kim\Documents\CudaTest\CudaGameOfLife\CudaGameOfLife\bin\Debug\CudaGameOfLife.pdb
+C:\Users\Kim\Documents\CudaTest\CudaGameOfLife\CudaGameOfLife\obj\Debug\CudaGameOfLife.csprojResolveAssemblyReference.cache
+C:\Users\Kim\Documents\CudaTest\CudaGameOfLife\CudaGameOfLife\bin\Debug\Cudafy.NET.dll
+C:\Users\Kim\Documents\CudaTest\CudaGameOfLife\CudaGameOfLife\bin\Debug\Cudafy.NET.xml
