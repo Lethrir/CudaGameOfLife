@@ -11,8 +11,8 @@ namespace CudaGameOfLife
 {
     class Program
     {
-        private const int gridSize = 20;
-        private const int Generations = 100;
+        private const int gridSize = 1000;
+        private const int Generations = 500;
         private static bool[,] _cells1 = new bool[gridSize, gridSize];
         private static bool[,] _cells2 = new bool[gridSize, gridSize];
         private static bool[,] _cells1Gpu;
@@ -46,10 +46,41 @@ namespace CudaGameOfLife
             cells[x + 1, y + 2] = true;
         }
 
+        private static void TimeEvent(Action action, string name)
+        {
+            var start = DateTime.Now;
+            action();
+            var tt = DateTime.Now - start;
+            Console.WriteLine("Time taken for {0}: {1}", name, tt.TotalMilliseconds);
+        }
+
         private static void RunGame(GPGPU gpu)
         {
             setupGlider(_cells1, 10,10);
 
+            TimeEvent(() => GpuGoL(gpu), "GPU GoL");
+            TimeEvent(CpuGoL, "CPU GoL");
+
+            Console.ReadKey();
+        }
+
+        private static void CpuGoL()
+        {
+            for (var i = 0; i < Generations; i++)
+            {
+                if (i%2 == 0)
+                {
+                    RunCpuGeneration(_cells1, _cells2);
+                }
+                else
+                {
+                    RunCpuGeneration(_cells2, _cells1);
+                }
+            }
+        }
+
+        private static void GpuGoL(GPGPU gpu)
+        {
             _cells1Gpu = gpu.CopyToDevice(_cells1);
             _cells2Gpu = gpu.CopyToDevice(_cells2);
 
@@ -67,8 +98,17 @@ namespace CudaGameOfLife
 
             gpu.CopyFromDevice(_cells1Gpu, _cells1);
             gpu.CopyFromDevice(_cells2Gpu, _cells2);
+        }
 
-            Console.ReadKey();
+        private static void RunCpuGeneration(bool[,] cells1, bool[,] cells2)
+        {
+            for (var x = 0; x < gridSize; x++)
+            {
+                for (var y = 0; y < gridSize; y++)
+                {
+                    cells2[x, y] = CheckCell(cells1, x, y);
+                }
+            }
         }
 
         [Cudafy]
@@ -78,6 +118,26 @@ namespace CudaGameOfLife
             var x = thread.blockIdx.x;
             var y = thread.blockIdx.y;
 
+            cells2[x, y] = CheckCell(cells1, x, y);
+        }
+
+        [Cudafy]
+        private static bool CheckCell(bool[,] cells1, int x, int y)
+        {
+            var i = GetSurroundingCount(cells1, x, y);
+
+            return IsAlive(cells1, i, x, y);
+        }
+
+        [Cudafy]
+        private static bool IsAlive(bool[,] cells1, int i, int x, int y)
+        {
+            return (i == 3 || (cells1[x, y] && i == 2));
+        }
+
+        [Cudafy]
+        private static int GetSurroundingCount(bool[,] cells1, int x, int y)
+        {
             var i = 0;
             if (GetTL(x, y, cells1))
             {
@@ -111,8 +171,7 @@ namespace CudaGameOfLife
             {
                 i++;
             }
-
-            cells2[x, y] = (i == 3 || (cells1[x, y] && i == 2));
+            return i;
         }
 
         [Cudafy]
