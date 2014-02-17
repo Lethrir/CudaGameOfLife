@@ -12,11 +12,12 @@ namespace CudaGameOfLife
     class Program
     {
         private const int gridSize = 1000;
-        private const int Generations = 10;
+        private const int Generations = 10000;
         private static bool[,] _cells1 = new bool[gridSize, gridSize];
         private static bool[,] _cells2 = new bool[gridSize, gridSize];
         private static bool[,] _cells1Gpu;
         private static bool[,] _cells2Gpu;
+        private const int CpuCount = 8;
 
         static void Main(string[] args)
         {
@@ -59,7 +60,7 @@ namespace CudaGameOfLife
             setupGlider(_cells1, 5, 5);
 
             TimeEvent(() => GpuGoL(gpu), "GPU GoL");
-            TimeEvent(CpuGoL, "CPU GoL");
+            //TimeEvent(CpuGoL, "CPU GoL");
 
             Console.ReadKey();
         }
@@ -102,9 +103,31 @@ namespace CudaGameOfLife
 
         private static void RunCpuGeneration(bool[,] cells1, bool[,] cells2)
         {
-            for (var x = 0; x < gridSize; x++)
+            // split work into blocks
+            var hBlocks = CpuCount/2;
+            var ySplit = gridSize/2;
+            var xSplit = gridSize/hBlocks;
+
+            Task[] tasks = new Task[CpuCount];
+
+            
+
+            for (var i = 0; i < hBlocks; i++)
             {
-                for (var y = 0; y < gridSize; y++)
+                var minX = i*xSplit;
+                var maxX = minX + xSplit;
+                tasks[i] = Task.Factory.StartNew(() => DoCpuBlock(cells1, cells2, minX, maxX, 0, ySplit));
+                tasks[i+hBlocks] = Task.Factory.StartNew(() => DoCpuBlock(cells1, cells2, minX, maxX, ySplit, gridSize));
+            }
+
+            Task.WaitAll(tasks);
+        }
+
+        private static void DoCpuBlock(bool[,] cells1, bool[,] cells2, int minX, int maxX, int minY, int maxY)
+        {
+            for (var x = minX; x < maxX; x++)
+            {
+                for (var y = minY; y < maxY; y++)
                 {
                     cells2[x, y] = CheckCell(cells1, x, y);
                 }
